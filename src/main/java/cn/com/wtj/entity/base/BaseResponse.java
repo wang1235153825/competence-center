@@ -16,6 +16,12 @@ import lombok.ToString;
 public class BaseResponse<T> extends BaseBean{
     private static final long serialVersionUID = -3276454401241312505L;
 
+    public static final String SUCCESS_CODE = "00000";
+    public static final String FAILD_CODE = "00001";
+
+    public static final String SUCCESS_MESSAGE = "成功";
+    public static final String FAILD_MESSAGE = "失败";
+
     private String message;
 
     private String code;

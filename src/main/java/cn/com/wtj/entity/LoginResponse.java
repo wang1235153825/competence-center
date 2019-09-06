@@ -19,5 +19,8 @@ public class LoginResponse extends BaseBean {
 
     private TokenDetail tokenDetail;
 
+    private String userId;
+
+    private String userName;
 
 }

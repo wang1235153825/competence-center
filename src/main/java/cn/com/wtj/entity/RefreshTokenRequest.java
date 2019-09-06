@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 /**
- * Created on 2019/9/3.
+ * Created on 2019/9/4.
  *
  * @author wangtingjun
  * @since 1.0.0
@@ -14,12 +14,13 @@ import lombok.ToString;
 @Data
 @ToString
 @EqualsAndHashCode
-public class LoginRequest extends BaseBean {
-    private static final long serialVersionUID = 3451042967096221526L;
+public class RefreshTokenRequest extends BaseBean {
+    private static final long serialVersionUID = -2118329942746908828L;
 
-    private String userName;
-
-    private String passWord;
+    private String userId;
 
     private String clientId;
+
+    private String refreshToken;
+
 }

@@ -2,6 +2,8 @@ package cn.com.wtj.client.base;
 
 import cn.com.wtj.entity.LoginRequest;
 import cn.com.wtj.entity.LoginResponse;
+import cn.com.wtj.entity.RefreshTokenRequest;
+import cn.com.wtj.entity.TokenDetail;
 import cn.com.wtj.entity.base.BaseResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface LoginDef {
 
     @PostMapping
-    public BaseResponse<LoginResponse> login(@RequestBody LoginRequest request);
+    BaseResponse<LoginResponse> login(@RequestBody LoginRequest request);
+
+    @PostMapping("/refresh")
+    BaseResponse<TokenDetail> login(@RequestBody RefreshTokenRequest request);
 
 }

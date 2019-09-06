@@ -2,6 +2,7 @@ package cn.com.wtj;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
  * Created on 2019/9/3.
@@ -9,6 +10,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  * @author wangtingjun
  * @since 1.0.0
  */
+@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider")
 @SpringBootApplication
 public class CompetenceCenterApplication {
 
