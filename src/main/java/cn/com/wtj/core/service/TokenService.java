@@ -5,6 +5,12 @@ import cn.com.wtj.core.service.bean.JwtItem;
 import cn.com.wtj.entity.TokenDetail;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.KeyLengthException;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWTClaimsSet;
+import javassist.compiler.TokenId;
+
+import java.text.ParseException;
+import java.util.Map;
 
 /**
  * Created on 2019/9/3.
@@ -16,8 +22,8 @@ public interface TokenService {
 
     TokenDetail createToken(User user, String clientId);
 
-    TokenDetail refreshToken(String refreshToken,User user,String clientId,JwtItem jwtItem);
+    TokenDetail refreshToken(String refreshToken, User user, String clientId);
 
-    JwtItem obtain(String token) ;
+    JwtItem vaildRS256(String token);
 
 }

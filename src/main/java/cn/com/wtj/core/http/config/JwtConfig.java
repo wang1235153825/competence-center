@@ -15,12 +15,18 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("jwt.secret")
 public class JwtConfig {
 
+    private final String JWT_VALUE_ISS = "USER_CENTER";
+
+    private final String JWT_VALUE_AUD = "web";
+
     private String Key;
 
-    private Integer tokenExpiresTime;
+    private Integer tokenExpiresIn;
 
     private Integer refreshTokenExpiresIn;
 
     private Integer refreshTokenExpiresThreshold;
+
+    private String jwtHeader;
 
 }

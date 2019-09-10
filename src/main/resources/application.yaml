@@ -16,6 +16,16 @@ spring:
 
 jwt.secret:
   key: 37c975e917b24d41834643c47a83ad20
-  token-expires-time: 15
+  jwt-header: COP_Authorization
+  # token 过期时间 分钟
+  token-expires-in: 120
+  # refresh 过期时间 15天
   refresh-token-expires-in: 21600
+  # refresh 过期阈值 30分钟
   refresh-token-expires-threshold: 30
+
+encryption:
+  # 密码加密的盐值
+  salt-value: 3bcbb857c763d1429a24959cb8de2593
+  #MD5的散列次数
+  hash: 1024

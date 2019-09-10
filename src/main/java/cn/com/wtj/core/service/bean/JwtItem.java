@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @ToString
 @EqualsAndHashCode
+@Builder
 public class JwtItem implements Serializable {
     private static final long serialVersionUID = -4083658159989084490L;
 
@@ -27,6 +28,6 @@ public class JwtItem implements Serializable {
 
     private String clientId;
 
-    private LocalDateTime expirationTime;
+    private long expirationTime;
 
 }

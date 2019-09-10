@@ -25,12 +25,13 @@ import java.time.LocalDateTime;
 @Table(name = "user")
 public class User extends BaseEntity {
 
+
     @Id
     @GenericGenerator(name = "idGenerator", strategy = "uuid")
     @GeneratedValue(generator = "idGenerator")
     private String id;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String userName;
 
     @Column(name = "password")
@@ -42,7 +43,7 @@ public class User extends BaseEntity {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "adress")
+    @Column(name = "address")
     private String address;
 
     @Column(name = "status")
@@ -53,7 +54,7 @@ public class User extends BaseEntity {
     private LocalDateTime createTime;
 
     @LastModifiedDate
-    @Column(name = "modif_time")
+    @Column(name = "modify_time")
     private LocalDateTime modifyTime;
 
 }

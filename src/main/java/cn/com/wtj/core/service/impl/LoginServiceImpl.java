@@ -11,13 +11,28 @@ import cn.com.wtj.entity.LoginRequest;
 import cn.com.wtj.entity.LoginResponse;
 import cn.com.wtj.entity.RefreshTokenRequest;
 import cn.com.wtj.entity.TokenDetail;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
+import com.nimbusds.jwt.JWTClaimsSet;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.security.KeyPair;
+import java.text.ParseException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Created on 2019/9/3.
@@ -44,33 +59,43 @@ public class LoginServiceImpl implements LoginService {
     public LoginResponse login(LoginRequest request) {
         log.info("用户登陆开始");
 
+        LoginResponse response = new LoginResponse();
         String clientId = request.getClientId();
-        Client client = clientRepository.findByClientId(clientId).orElseThrow(
+        clientRepository.findByClientId(clientId).orElseThrow(
                 () -> new RuntimeException("client id 不存在")
         );
 
 
         //TODO 密码暂时为明文,后期增加加密
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(request.getUserName(), request.getPassWord());
-        subject.login(token);
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            UsernamePasswordToken token = new UsernamePasswordToken(request.getUserName(), request.getPassWord());
+            subject.login(token);
 
-        //TODO 返回值中暂时只增加少量信息
-//        TokenDetail token = tokenService.createToken(user, client.getClientId());
-//        LoginResponse loginResponse = new LoginResponse();
-//        loginResponse.setTokenDetail(token);
-//        loginResponse.setUserId(user.getId());
-//        loginResponse.setUserName(user.getUserName());
-
-//        return loginResponse;
-        return null;
+            //TODO 返回值token中暂时只增加少量信息
+            User user = userRepository.findByUserName(request.getUserName()).orElseThrow(() -> new RuntimeException("用户名不存在"));
+            TokenDetail tokenDetail = tokenService.createToken(user, clientId);
+            response.setTokenDetail(tokenDetail);
+            response.setUserName(user.getUserName());
+            response.setUserId(user.getId());
+        }catch (Exception e){
+            throw new RuntimeException("登陆失败:"+e.getMessage());
+        }
+        return response;
     }
 
+
+
+    /**
+     * 刷新token
+     * @param request the request
+     * @return
+     */
     @Override
-    public TokenDetail refreshToken(RefreshTokenRequest request) {
-        JwtItem obtain = tokenService.obtain(request.getRefreshToken());
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException());
-        TokenDetail detail = tokenService.refreshToken(request.getRefreshToken(), user, obtain.getClientId(), obtain);
-        return detail;
+    public TokenDetail refreshToken(RefreshTokenRequest request){
+        JwtItem item = tokenService.vaildRS256(request.getRefreshToken());
+
+        User user = userRepository.findById(item.getUserId()).orElseThrow(RuntimeException::new);
+        return tokenService.refreshToken(request.getRefreshToken(), user,request.getClientId());
     }
 }

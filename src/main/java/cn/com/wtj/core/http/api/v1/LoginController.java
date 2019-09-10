@@ -8,10 +8,13 @@ import cn.com.wtj.entity.RefreshTokenRequest;
 import cn.com.wtj.entity.TokenDetail;
 import cn.com.wtj.entity.base.BaseResponse;
 import cn.com.wtj.entity.base.BaseResponseBuilder;
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 /**
  * Created on 2019/9/3.
@@ -33,8 +36,15 @@ public class LoginController implements LoginDef {
     }
 
     @Override
-    public BaseResponse<TokenDetail> login(RefreshTokenRequest request) {
-        TokenDetail detail = loginService.refreshToken(request);
-        return null;
+    public BaseResponse<TokenDetail> refresh(RefreshTokenRequest request) {
+        TokenDetail response = null;
+        try {
+            response = loginService.refreshToken(request);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JOSEException e) {
+            e.printStackTrace();
+        }
+        return BaseResponseBuilder.success(BaseResponse.SUCCESS_CODE,BaseResponse.SUCCESS_MESSAGE,response);
     }
 }

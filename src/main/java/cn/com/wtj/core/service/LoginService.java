@@ -4,6 +4,9 @@ import cn.com.wtj.entity.LoginRequest;
 import cn.com.wtj.entity.LoginResponse;
 import cn.com.wtj.entity.RefreshTokenRequest;
 import cn.com.wtj.entity.TokenDetail;
+import com.nimbusds.jose.JOSEException;
+
+import java.text.ParseException;
 
 /**
  * Created on 2019/9/3.
@@ -15,5 +18,5 @@ public interface LoginService {
 
     LoginResponse login(LoginRequest request);
 
-    TokenDetail refreshToken(RefreshTokenRequest request);
+    TokenDetail refreshToken(RefreshTokenRequest request) throws ParseException, JOSEException;
 }

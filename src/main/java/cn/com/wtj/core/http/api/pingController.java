@@ -17,7 +17,7 @@ public class pingController {
 
     @RequestMapping
     public String ping(){
-        return "ping" + LocalDateTime.now();
+        return "pong " + LocalDateTime.now();
     }
 
 }

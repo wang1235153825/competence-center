@@ -1,5 +1,6 @@
 package cn.com.wtj.core.service.impl;
 
+import cn.com.wtj.core.http.config.ShiroValueConfig;
 import cn.com.wtj.core.repository.UserRepository;
 import cn.com.wtj.core.repository.entity.User;
 import cn.com.wtj.core.service.UserService;
@@ -25,25 +26,29 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final ShiroValueConfig svConfig;
+
     /**
      * 创建user账户
      * @param request the request
      */
     @Override
     public void createUser(CreateUserRequest request) {
+        log.info("创建用户账户--开始 request:[{}]",request);
         //TODO 校验信息 将使用vaild框架
+
         User user = new User();
         BeanUtils.copyProperties(request,user);
 
-        //TODO 这个是盐 先瞎写咯
-        ByteSource source = ByteSource.Util.bytes("aaaaaaaaaa");
-        SimpleHash md5Pw = new SimpleHash("MD5", request.getPassword(), source, 1024);
-        System.out.println(md5Pw.toString());
+        //对密码进行盐值加密 MD5
+        ByteSource source = ByteSource.Util.bytes(svConfig.getSaltValue());
+        SimpleHash md5Pw = new SimpleHash("MD5", request.getPassword(), source,svConfig.getHash());
 
         user.setPassword(md5Pw.toString());
-        user.setStatus(new Short("1"));
-        //TODO 入库操作
+        user.setStatus(User.TYPE_OK);
+
+        //入库
         User save = userRepository.save(user);
-        System.out.println(save);
+        log.info("创建用户账户--完成 user : [{}]",save);
     }
 }

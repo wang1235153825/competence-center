@@ -19,4 +19,15 @@ import java.io.Serializable;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity implements Serializable {
     private static final long serialVersionUID = 3671548893215053077L;
+
+    /**
+     * 状态  可用
+     */
+    public static final Short TYPE_OK = 1;
+
+
+    /**
+     * 状态 禁用
+     */
+    public static final Short TYPE_DISABLE = 0;
 }

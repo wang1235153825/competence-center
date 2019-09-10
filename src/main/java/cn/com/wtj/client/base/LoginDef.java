@@ -20,6 +20,6 @@ public interface LoginDef {
     BaseResponse<LoginResponse> login(@RequestBody LoginRequest request);
 
     @PostMapping("/refresh")
-    BaseResponse<TokenDetail> login(@RequestBody RefreshTokenRequest request);
+    BaseResponse<TokenDetail> refresh(@RequestBody RefreshTokenRequest request);
 
 }

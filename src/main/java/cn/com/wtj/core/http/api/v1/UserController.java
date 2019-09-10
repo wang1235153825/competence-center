@@ -4,6 +4,8 @@ import cn.com.wtj.client.base.UserDef;
 import cn.com.wtj.core.service.UserService;
 import cn.com.wtj.entity.CreateUserRequest;
 import cn.com.wtj.entity.base.BaseResponse;
+import cn.com.wtj.entity.base.BaseResponseBuilder;
+import com.sun.xml.internal.ws.client.sei.ResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +27,6 @@ public class UserController implements UserDef {
     @Override
     public BaseResponse<Void> createUser(CreateUserRequest request) {
         userService.createUser(request);
-        return null;
+        return BaseResponseBuilder.success(BaseResponse.SUCCESS_CODE,BaseResponse.SUCCESS_MESSAGE,null);
     }
 }

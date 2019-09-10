@@ -1,19 +1,20 @@
 package cn.com.wtj.core.shiro.config;
 
 import cn.com.wtj.core.shiro.MyRealms;
+import cn.com.wtj.core.shiro.filter.JWTFilter;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -47,7 +48,7 @@ public class ShiroConfig {
     }
 
     @Bean
-    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+    public HashedCredentialsMatcher credentialsMatcher() {
         HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         // 散列算法:这里使用MD5算法;
         hashedCredentialsMatcher.setHashAlgorithmName("md5");
@@ -58,26 +59,23 @@ public class ShiroConfig {
         return hashedCredentialsMatcher;
     }
 
-    @Bean("shiroFilter")
-    public ShiroFilterFactoryBean factory(DefaultWebSecurityManager securityManager) {
+    @Bean
+    public ShiroFilterFactoryBean shiroFilter(DefaultWebSecurityManager securityManager) {
         ShiroFilterFactoryBean factoryBean = new ShiroFilterFactoryBean();
+        factoryBean.setSecurityManager(securityManager);
 
         // 添加自己的过滤器并且取名为jwt
-        Map<String, Filter> filterMap = new HashMap<>();
+        Map<String, Filter> filterMap = new LinkedHashMap<>();
+        filterMap.put("jwtFilter",new JWTFilter());
         factoryBean.setFilters(filterMap);
 
-        factoryBean.setSecurityManager(securityManager);
-        factoryBean.setUnauthorizedUrl("/401");
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-        /*
-         * 自定义url规则
-         * http://shiro.apache.org/web.html#urls-
-         */
-        Map<String, String> filterRuleMap = new HashMap<>();
-        // 所有请求通过我们自己的JWT Filter
-        // 访问401和404页面不通过我们的Filter
-        filterRuleMap.put("/401", "anon");
-        factoryBean.setFilterChainDefinitionMap(filterRuleMap);
+        filterChainDefinitionMap.put("/login", "anon");
+        filterChainDefinitionMap.put("/ping", "anon");
+        filterChainDefinitionMap.put("/login/refresh","anon");
+        filterChainDefinitionMap.put("/**","jwtFilter");
+        factoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return factoryBean;
     }
 
@@ -104,5 +102,18 @@ public class ShiroConfig {
         AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
         advisor.setSecurityManager(securityManager);
         return advisor;
+    }
+
+
+    /**
+     * 巨坑  spring boot中spring会自动的帮助你注册并使用filter 你需要禁用掉 否则会一直过filter,导致shiro配置失效
+     * @param filter the JWTFilter
+     * @return
+     */
+    @Bean
+    public FilterRegistrationBean<JWTFilter> filteRegistration(JWTFilter filter) {
+        FilterRegistrationBean<JWTFilter> registration = new FilterRegistrationBean<>(filter);
+        registration.setEnabled(false);
+        return registration;
     }
 }
