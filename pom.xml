@@ -10,7 +10,7 @@
 
     <properties>
         <commons-lang>2.0</commons-lang>
-        <commons-collections>3.2</commons-collections>
+        <commons-collections>3.2.2</commons-collections>
         <commons-beanutils>1.7.0</commons-beanutils>
         <cloud-social>1.1.6.RELEASE</cloud-social>
     </properties>
