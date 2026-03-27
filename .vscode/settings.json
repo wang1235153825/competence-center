@@ -1,0 +1,8 @@
+{
+  "github.copilot.chat.experimental.modelPicker.enabled": true,
+  "github.copilot.selectedModels": {
+    "chat": "claude-sonnet-4-5",
+    "codeCompletion": "claude-sonnet-4-5",
+    "inline": "claude-sonnet-4-5"
+  }
+}
